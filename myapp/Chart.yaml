@@ -1,0 +1,4 @@
+apiVersion: v2
+name: myapp
+description: A simple Helm chart for deploying a frontend and backend application
+version: 0.1.0

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-frontend
+spec:
+  type: {{ .Values.frontend.service.type }}
+  selector:
+    app: frontend
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: {{ .Values.frontend.service.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-backend
+spec:
+  type: {{ .Values.backend.service.type }}
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 4000
+    targetPort: {{ .Values.backend.service.port }}
