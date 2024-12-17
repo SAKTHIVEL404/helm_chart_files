@@ -1,3 +1,4 @@
+# Frontend Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,10 +8,11 @@ spec:
   selector:
     app: frontend
   ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: {{ .Values.frontend.service.port }}
+    - protocol: TCP
+      port: 8080 # Matches your input service port
+      targetPort: {{ .Values.frontend.service.port }}
 ---
+# Backend Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -20,6 +22,7 @@ spec:
   selector:
     app: backend
   ports:
-  - protocol: TCP
-    port: 4000
-    targetPort: {{ .Values.backend.service.port }}
+    - protocol: TCP
+      port: 4000 # Matches your input service port
+      targetPort: {{ .Values.backend.service.port }}
+---
