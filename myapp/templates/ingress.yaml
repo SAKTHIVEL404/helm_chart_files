@@ -15,6 +15,13 @@ spec:
             pathType: {{ index .Values.ingress.hosts 0 "paths" 0 "pathType" | default "Prefix" }}
             backend:
               service:
-                name: {{ index .Values.ingress.hosts 0 "paths" 0 "backend" "serviceName" }}
+                name: {{ .Chart.Name }}-frontend  # Name of the frontend service
                 port:
-                  number: {{ index .Values.ingress.hosts 0 "paths" 0 "backend" "servicePort" }}
+                  number: 8080  # Port for the frontend service
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Chart.Name }}-backend  # Name of the backend service
+                port:
+                  number: 5000  # Port for the backend service
