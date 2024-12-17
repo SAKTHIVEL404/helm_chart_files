@@ -1,16 +1,18 @@
+---
 # Frontend Service
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Chart.Name }}-frontend
 spec:
-  type: {{ .Values.frontend.service.type }}
+  type: {{ .Values.frontend.service.type }}  # LoadBalancer or ClusterIP
   selector:
-    app: frontend
+    app.kubernetes.io/name: {{ .Chart.Name }}  # Make sure this selector matches your pod labels
+    app.kubernetes.io/component: frontend
   ports:
     - protocol: TCP
-      port: 8080 # Matches your input service port
-      targetPort: {{ .Values.frontend.service.port }}
+      port: 8080  # External port to access frontend service
+      targetPort: {{ .Values.frontend.service.port }}  # Matches the port exposed by the frontend pod
 ---
 # Backend Service
 apiVersion: v1
@@ -18,11 +20,11 @@ kind: Service
 metadata:
   name: {{ .Chart.Name }}-backend
 spec:
-  type: {{ .Values.backend.service.type }}
+  type: {{ .Values.backend.service.type }}  # ClusterIP or any other type
   selector:
-    app: backend
+    app.kubernetes.io/name: {{ .Chart.Name }}  # Make sure this selector matches your pod labels
+    app.kubernetes.io/component: backend
   ports:
     - protocol: TCP
-      port: 4000 # Matches your input service port
-      targetPort: {{ .Values.backend.service.port }}
----
+      port: 5000  # External port to access backend service
+      targetPort: {{ .Values.backend.service.port }}  # Matches the port exposed by the backend pod
