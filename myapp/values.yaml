@@ -1,6 +1,6 @@
 frontend:
   image:
-    repository: sakthivel404/sample-frontend
+    repository: sakthivel404/frontend-app
     tag: latest
   service:
     type: LoadBalancer
@@ -8,7 +8,7 @@ frontend:
 
 backend:
   image:
-    repository: sakthivel404/sample-backend
+    repository: sakthivel404/backend-app
     tag: latest
   service:
     type: ClusterIP
