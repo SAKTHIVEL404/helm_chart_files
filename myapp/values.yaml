@@ -20,17 +20,22 @@ serviceAccount:
   create: true  # Automatically create a service account if required
 
 ingress:
-  enabled: true  # Enable ingress to route external traffic to the frontend
+  enabled: true
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /  # Ensuring paths are rewritten correctly
+    nginx.ingress.kubernetes.io/rewrite-target: /
   hosts:
-  - host: example.com  # Replace with your actual domain name for ingress routing
-    paths:
-    - path: /  # Path for routing traffic
-      pathType: Prefix  # Specify how the path is matched (Prefix or Exact)
-      backend:
-        serviceName: frontend  # The name of the service to route traffic to
-        servicePort: 8080  # The port to route traffic to in the frontend service
+    - host: example.com  # Replace with your actual domain
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            serviceName: myapp-frontend
+            servicePort: 8080
+        - path: /api
+          pathType: Prefix
+          backend:
+            serviceName: myapp-backend
+            servicePort: 5000
 
 autoscaling:
   enabled: true  # Enable autoscaling to automatically scale the number of replicas based on load
