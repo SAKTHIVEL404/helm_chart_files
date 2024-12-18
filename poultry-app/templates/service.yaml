@@ -1,15 +1,37 @@
+# MySQL Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "poultry-app.fullname" . }}
-  labels:
-    {{- include "poultry-app.labels" . | nindent 4 }}
+  name: mysql
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+    - port: 3306
   selector:
-    {{- include "poultry-app.selectorLabels" . | nindent 4 }}
+    app: mysql
+
+---
+# Backend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+  selector:
+    app: backend
+
+---
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+  selector:
+    app: frontend
