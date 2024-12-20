@@ -1,28 +1,30 @@
-{{- if .Values.autoscaling.enabled }}
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
+# ingress.yaml
+
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: {{ include "poultry-app.fullname" . }}
-  labels:
-    {{- include "poultry-app.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.ingress.rewriteTarget }}
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: {{ include "poultry-app.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
-  metrics:
-    {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-    {{- end }}
-    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: memory
-        targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-    {{- end }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.paths.frontend }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "poultry-app.frontend.fullname" . }}
+                port:
+                  number: {{ .Values.frontend.service.port }}
+          - path: {{ .Values.ingress.paths.backend }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "poultry-app.backend.fullname" . }}
+                port:
+                  number: {{ .Values.backend.service.port }}
 {{- end }}
