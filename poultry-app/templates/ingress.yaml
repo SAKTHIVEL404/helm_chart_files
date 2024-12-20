@@ -1,25 +1,30 @@
+# ingress.yaml
+
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: poultry-ingress
+  name: {{ include "poultry-app.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.ingress.rewriteTarget }}
 spec:
   rules:
-    - host: poultry.local
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
-          - path: /
+          - path: {{ .Values.ingress.paths.frontend }}
             pathType: Prefix
             backend:
               service:
-                name: frontend
+                name: {{ include "poultry-app.frontend.fullname" . }}
                 port:
-                  number: 80
-          - path: /api
+                  number: {{ .Values.frontend.service.port }}
+          - path: {{ .Values.ingress.paths.backend }}
             pathType: Prefix
             backend:
               service:
-                name: backend
+                name: {{ include "poultry-app.backend.fullname" . }}
                 port:
-                  number: 8080
+                  number: {{ .Values.backend.service.port }}
+{{- end }}
