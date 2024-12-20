@@ -1,15 +1,20 @@
+# test-connection.yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "poultry-app.fullname" . }}-test-connection"
+  name: test-connection
+  namespace: poultry-app
   labels:
-    {{- include "poultry-app.labels" . | nindent 4 }}
-  annotations:
-    "helm.sh/hook": test
+    app: poultry-app
 spec:
   containers:
-    - name: wget
+    - name: test-connection
       image: busybox
-      command: ['wget']
-      args: ['{{ include "poultry-app.fullname" . }}:{{ .Values.service.port }}']
-  restartPolicy: Never
+      command:
+        - "sh"
+        - "-c"
+        - |
+          echo "Testing connection to services"
+          nc -zv -w 3 poultry-app-frontend 80
+          nc -zv -w 3 poultry-app-backend 8080
+          nc -zv -w 3 poultry-app-mysql 3306
