@@ -1,37 +1,40 @@
-# MySQL Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: poultry-app-frontend
+  namespace: poultry-app
 spec:
-  type: ClusterIP
-  ports:
-    - port: 3306
   selector:
-    app: mysql
-
----
-# Backend Service
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend
-spec:
-  type: ClusterIP
-  ports:
-    - port: 8080
-  selector:
-    app: backend
-
----
-# Frontend Service
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend
-spec:
-  type: ClusterIP
+    app: poultry-app
+    tier: frontend
   ports:
     - port: 80
+      targetPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poultry-app-backend
+  namespace: poultry-app
+spec:
   selector:
-    app: frontend
+    app: poultry-app
+    tier: backend
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: poultry-app-mysql
+  namespace: poultry-app
+spec:
+  selector:
+    app: poultry-app
+    tier: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
+  clusterIP: None  # Headless ser
