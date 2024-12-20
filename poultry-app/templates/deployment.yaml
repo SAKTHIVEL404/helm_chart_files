@@ -1,77 +1,82 @@
+# Frontend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: poultry-app-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: poultry-app
+      tier: frontend
   template:
     metadata:
       labels:
-        app: mysql
+        app: poultry-app
+        tier: frontend
     spec:
       containers:
-        - name: mysql
-          image: mysql-app-poultry:latest
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-root-password-secret
-                  key: MYSQL_ROOT_PASSWORD
-            - name: MYSQL_DATABASE
-              value: "poultrydb"
+        - name: frontend
+          image: sakthivel404/frontend-app-poultry:latest
           ports:
-            - containerPort: 3306
-
-
+            - containerPort: 80
+---
+# Backend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: poultry-app-backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: poultry-app
+      tier: backend
   template:
     metadata:
       labels:
-        app: backend
+        app: poultry-app
+        tier: backend
     spec:
       containers:
         - name: backend
-          image: backend-app-poultry:latest  # Replace with your local image tag
+          image: sakthivel404/backend-app-poultry:latest
           env:
             - name: DATABASE_HOST
               value: "mysql"
             - name: DATABASE_USER
               value: "root"
             - name: DATABASE_PASSWORD
-              value: "rootp"
+              value: "root"
             - name: DATABASE_NAME
               value: "poultrydb"
           ports:
             - containerPort: 8080
-
+---
+# MySQL Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: poultry-app-mysql
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: poultry-app
+      tier: mysql
   template:
     metadata:
       labels:
-        app: frontend
+        app: poultry-app
+        tier: mysql
     spec:
       containers:
-        - name: frontend
-          image: frontend-app-poultry:latest  # Replace with your local image tag
+        - name: mysql
+          image: sakthivel404/mysql-app-poultry:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "poultrydb"
           ports:
-            - containerPort: 80
+            - containerPort: 3306
