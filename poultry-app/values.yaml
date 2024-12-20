@@ -1,10 +1,11 @@
-# Image settings for frontend, backend, and MySQL
-frontend:
+mysql:
   image:
-    repository: frontend-app-poultry  # Local image built in Minikube Docker
+    repository: mysql-app-poultry
     tag: latest
+  rootPasswordSecret: mysql-root-password-secret  # Reference to the Secret containing MySQL root password
   service:
-    port: 80  # Port where frontend app will be exposed
+    port: 3306
+
 
 backend:
   image:
