@@ -14,10 +14,13 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql-app-poultry:latest  # Replace with your local image tag
+          image: mysql-app-poultry:latest
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "root"
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-root-password-secret
+                  key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "poultrydb"
           ports:
