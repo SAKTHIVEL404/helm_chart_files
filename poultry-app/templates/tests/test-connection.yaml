@@ -1,20 +1,22 @@
-# test-connection.yaml
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: test-connection
-  namespace: poultry-app
-  labels:
-    app: poultry-app
 spec:
-  containers:
-    - name: test-connection
-      image: busybox
-      command:
-        - "sh"
-        - "-c"
-        - |
-          echo "Testing connection to services"
-          nc -zv -w 3 poultry-app-frontend 80
-          nc -zv -w 3 poultry-app-backend 8080
-          nc -zv -w 3 poultry-app-mysql 3306
+  template:
+    metadata:
+      labels:
+        app: poultry-app
+    spec:
+      containers:
+        - name: test-connection
+          image: busybox
+          command:
+            - "sh"
+            - "-c"
+            - |
+              echo "Testing connection to services"
+              nc -zv -w 3 poultry-app-frontend 80
+              nc -zv -w 3 poultry-app-backend 8080
+              nc -zv -w 3 poultry-app-mysql 3306
+      restartPolicy: Never
